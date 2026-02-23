@@ -1,0 +1,99 @@
+
+════════════════════════════════════════════════════════════
+  Server started at 2026-02-23 20:42:49
+  PID will be updated below once the process is known
+════════════════════════════════════════════════════════════
+  PID: 93351
+2026-02-23 20:42:50 | INFO     | N/A                                  | uvicorn.error | Started server process [93351]
+2026-02-23 20:42:50 | INFO     | N/A                                  | uvicorn.error | Waiting for application startup.
+2026-02-23 20:42:50 | INFO     | N/A                                  | uvicorn.error | Application startup complete.
+2026-02-23 20:42:50 | ERROR    | N/A                                  | uvicorn.error | [Errno 48] error while attempting to bind on address ('0.0.0.0', 8004): address already in use
+2026-02-23 20:42:50 | INFO     | N/A                                  | uvicorn.error | Waiting for application shutdown.
+2026-02-23 20:42:50 | INFO     | N/A                                  | uvicorn.error | Application shutdown complete.
+Database initialized successfully with DDL from /Users/vipinkp/PycharmProjects/Liquidity_DataPipeline/docker/init_tables.sql
+Database connection pool disposed
+
+════════════════════════════════════════════════════════════
+  Server started at 2026-02-23 20:43:57
+  PID will be updated below once the process is known
+════════════════════════════════════════════════════════════
+  PID: 93432
+2026-02-23 20:43:58 | INFO     | N/A                                  | uvicorn.error | Started server process [93432]
+2026-02-23 20:43:58 | INFO     | N/A                                  | uvicorn.error | Waiting for application startup.
+2026-02-23 20:43:58 | INFO     | N/A                                  | uvicorn.error | Application startup complete.
+2026-02-23 20:43:58 | INFO     | N/A                                  | uvicorn.error | Uvicorn running on http://0.0.0.0:8005 (Press CTRL+C to quit)
+Database initialized successfully with DDL from /Users/vipinkp/PycharmProjects/Liquidity_DataPipeline/docker/init_tables.sql
+2026-02-23 20:43:58 | INFO     | N/A                                  | uvicorn.access | 127.0.0.1:63840 - "GET /docs HTTP/1.1" 200
+2026-02-23 20:43:58 | INFO     | e582f831-952e-4270-8ebd-702cae656820 | backend.app.services.company_service | Pipeline started — Read 20025 rows from companies.csv
+2026-02-23 20:43:58 | INFO     | e582f831-952e-4270-8ebd-702cae656820 | backend.app.services.company_service | BRONZE write + preprocess done in 0.05s
+2026-02-23 20:43:58 | INFO     | e582f831-952e-4270-8ebd-702cae656820 | backend.app.services.company_service |   Company quarantine [SUPERSEDED_BY_CORRECTION]: 25 rows
+2026-02-23 20:43:58 | INFO     | e582f831-952e-4270-8ebd-702cae656820 | backend.app.services.company_service | Company orphan rows: 25
+2026-02-23 20:43:58 | INFO     | e582f831-952e-4270-8ebd-702cae656820 | backend.app.services.company_service | Company clean rows:  20000
+2026-02-23 20:43:58 | INFO     | e582f831-952e-4270-8ebd-702cae656820 | backend.app.services.company_service | Cleanse — clean: 20000, orphan: 25
+2026-02-23 20:43:59 | INFO     | e582f831-952e-4270-8ebd-702cae656820 | backend.app.services.company_service | SILVER write done in 0.05s
+2026-02-23 20:43:59 | INFO     | e582f831-952e-4270-8ebd-702cae656820 | backend.app.services.company_service | QUARANTINE write done (25 rows) in 0.05s
+2026-02-23 20:43:59 | INFO     | e582f831-952e-4270-8ebd-702cae656820 | backend.app.services.company_service | GOLDEN zone: starting DB upsert for 20000 rows
+2026-02-23 20:43:59 | INFO     | e582f831-952e-4270-8ebd-702cae656820 | backend.app.services.company_service | Built 20000 upsert records in 0.08s
+2026-02-23 20:43:59 | INFO     | e582f831-952e-4270-8ebd-702cae656820 | backend.app.services.company_service | Executing 121 batches of up to 166 rows each
+2026-02-23 20:43:59 | INFO     | e582f831-952e-4270-8ebd-702cae656820 | backend.app.services.company_service | DB upsert committed 20000 rows in 0.76s
+2026-02-23 20:43:59 | INFO     | e582f831-952e-4270-8ebd-702cae656820 | backend.app.services.company_service | Total load_to_database time: 0.83s
+2026-02-23 20:43:59 | INFO     | e582f831-952e-4270-8ebd-702cae656820 | backend.app.services.company_service | GOLDEN zone: DB upsert completed in 0.84s
+2026-02-23 20:43:59 | INFO     | e582f831-952e-4270-8ebd-702cae656820 | backend.app.services.company_service | Pipeline completed in 0.96s
+2026-02-23 20:43:59 | INFO     | N/A                                  | uvicorn.access | 127.0.0.1:63842 - "POST /company HTTP/1.1" 200
+2026-02-23 20:43:59 | INFO     | 62c607d8-8c16-4368-913f-6d32ea76c6af | backend.app.services.revenue_service | Pipeline started — Read 492143 rows from monthly_revenue.csv
+2026-02-23 20:44:01 | INFO     | 62c607d8-8c16-4368-913f-6d32ea76c6af | backend.app.services.revenue_service | BRONZE write + preprocess done in 1.42s
+2026-02-23 20:44:01 | INFO     | 62c607d8-8c16-4368-913f-6d32ea76c6af | backend.app.services.revenue_service |   Known company_ids in DB: 20000
+2026-02-23 20:44:01 | INFO     | 62c607d8-8c16-4368-913f-6d32ea76c6af | backend.app.services.revenue_service |   Revenue quarantine [SUPERSEDED_BY_CORRECTION]: 12065 rows
+2026-02-23 20:44:01 | INFO     | 62c607d8-8c16-4368-913f-6d32ea76c6af | backend.app.services.revenue_service |   Revenue quarantine [ORPHAN_COMPANY_ID]: 492 rows
+2026-02-23 20:44:01 | INFO     | 62c607d8-8c16-4368-913f-6d32ea76c6af | backend.app.services.revenue_service |   Revenue quarantine [NULL_REVENUE]: 200 rows
+2026-02-23 20:44:01 | INFO     | 62c607d8-8c16-4368-913f-6d32ea76c6af | backend.app.services.revenue_service |   Revenue quarantine [NEGATIVE_REVENUE]: 200 rows
+2026-02-23 20:44:01 | INFO     | 62c607d8-8c16-4368-913f-6d32ea76c6af | backend.app.services.revenue_service |   Revenue orphan rows: 12957
+2026-02-23 20:44:01 | INFO     | 62c607d8-8c16-4368-913f-6d32ea76c6af | backend.app.services.revenue_service |   Revenue clean rows:  479186
+2026-02-23 20:44:01 | INFO     | 62c607d8-8c16-4368-913f-6d32ea76c6af | backend.app.services.revenue_service | Cleanse — clean: 479186, orphan: 12957
+2026-02-23 20:44:03 | INFO     | 62c607d8-8c16-4368-913f-6d32ea76c6af | backend.app.services.revenue_service | SILVER write done in 1.37s
+2026-02-23 20:44:03 | INFO     | 62c607d8-8c16-4368-913f-6d32ea76c6af | backend.app.services.revenue_service | QUARANTINE write done (12957 rows) in 1.37s
+2026-02-23 20:44:03 | INFO     | 62c607d8-8c16-4368-913f-6d32ea76c6af | backend.app.services.revenue_service | GOLDEN zone: starting DB upsert for 479186 rows
+2026-02-23 20:44:05 | INFO     | 62c607d8-8c16-4368-913f-6d32ea76c6af | backend.app.services.revenue_service | Built 479186 upsert records in 2.49s
+2026-02-23 20:44:05 | INFO     | 62c607d8-8c16-4368-913f-6d32ea76c6af | backend.app.services.revenue_service | Executing 5774 batches of up to 83 rows each
+2026-02-23 20:44:49 | INFO     | 62c607d8-8c16-4368-913f-6d32ea76c6af | backend.app.services.revenue_service | DB upsert committed 479186 rows in 44.32s
+2026-02-23 20:44:49 | INFO     | 62c607d8-8c16-4368-913f-6d32ea76c6af | backend.app.services.revenue_service | Total load_to_database time: 46.81s
+2026-02-23 20:44:50 | INFO     | 62c607d8-8c16-4368-913f-6d32ea76c6af | backend.app.services.revenue_service | GOLDEN zone: DB upsert completed in 47.06s
+2026-02-23 20:44:50 | INFO     | 62c607d8-8c16-4368-913f-6d32ea76c6af | backend.app.services.revenue_service | Pipeline completed in 50.29s
+2026-02-23 20:44:50 | INFO     | N/A                                  | uvicorn.access | 127.0.0.1:63844 - "POST /revenue HTTP/1.1" 200
+2026-02-23 20:44:50 | INFO     | 32a74733-a477-49ce-8b6a-3f26167666e4 | backend.app.services.expense_service | Pipeline started — Read 491981 rows from monthly_expenses.csv
+2026-02-23 20:44:52 | INFO     | 32a74733-a477-49ce-8b6a-3f26167666e4 | backend.app.services.expense_service | BRONZE write + preprocess done in 1.64s
+2026-02-23 20:44:52 | INFO     | 32a74733-a477-49ce-8b6a-3f26167666e4 | backend.app.services.expense_service |   Known company_ids in DB: 20000
+2026-02-23 20:44:52 | INFO     | 32a74733-a477-49ce-8b6a-3f26167666e4 | backend.app.services.expense_service |   Expense quarantine [SUPERSEDED_BY_CORRECTION]: 11975 rows
+2026-02-23 20:44:52 | INFO     | 32a74733-a477-49ce-8b6a-3f26167666e4 | backend.app.services.expense_service |   Expense quarantine [NEGATIVE_EXPENSE]: 150 rows
+2026-02-23 20:44:52 | INFO     | 32a74733-a477-49ce-8b6a-3f26167666e4 | backend.app.services.expense_service |   Expense orphan rows: 12125
+2026-02-23 20:44:52 | INFO     | 32a74733-a477-49ce-8b6a-3f26167666e4 | backend.app.services.expense_service |   Expense clean rows:  479856
+2026-02-23 20:44:52 | INFO     | 32a74733-a477-49ce-8b6a-3f26167666e4 | backend.app.services.expense_service | Cleanse — clean: 479856, orphan: 12125
+2026-02-23 20:44:53 | INFO     | 32a74733-a477-49ce-8b6a-3f26167666e4 | backend.app.services.expense_service | SILVER write done in 1.21s
+2026-02-23 20:44:53 | INFO     | 32a74733-a477-49ce-8b6a-3f26167666e4 | backend.app.services.expense_service | QUARANTINE write done (12125 rows) in 1.21s
+2026-02-23 20:44:53 | INFO     | 32a74733-a477-49ce-8b6a-3f26167666e4 | backend.app.services.expense_service | GOLDEN zone: starting DB upsert for 479856 rows
+2026-02-23 20:44:56 | INFO     | 32a74733-a477-49ce-8b6a-3f26167666e4 | backend.app.services.expense_service | Built 479856 upsert records in 2.35s
+2026-02-23 20:44:56 | INFO     | 32a74733-a477-49ce-8b6a-3f26167666e4 | backend.app.services.expense_service | Executing 5332 batches of up to 90 rows each
+2026-02-23 20:45:37 | INFO     | 32a74733-a477-49ce-8b6a-3f26167666e4 | backend.app.services.expense_service | DB upsert committed 479856 rows in 41.22s
+2026-02-23 20:45:37 | INFO     | 32a74733-a477-49ce-8b6a-3f26167666e4 | backend.app.services.expense_service | Total load_to_database time: 43.58s
+2026-02-23 20:45:37 | INFO     | 32a74733-a477-49ce-8b6a-3f26167666e4 | backend.app.services.expense_service | GOLDEN zone: DB upsert completed in 43.80s
+2026-02-23 20:45:37 | INFO     | 32a74733-a477-49ce-8b6a-3f26167666e4 | backend.app.services.expense_service | Pipeline completed in 47.00s
+2026-02-23 20:45:37 | INFO     | N/A                                  | uvicorn.access | 127.0.0.1:63849 - "POST /expense HTTP/1.1" 200
+2026-02-23 20:45:38 | INFO     | 9536bd44-0529-4fc3-93b1-1ad66b9908eb | backend.app.services.fx_rate_service | Pipeline started — Read 14 rows from fx_rate.csv
+2026-02-23 20:45:38 | INFO     | 9536bd44-0529-4fc3-93b1-1ad66b9908eb | backend.app.services.fx_rate_service | BRONZE write + preprocess done in 0.00s
+2026-02-23 20:45:38 | INFO     | 9536bd44-0529-4fc3-93b1-1ad66b9908eb | backend.app.services.fx_rate_service |   FX rate orphan rows: 0
+2026-02-23 20:45:38 | INFO     | 9536bd44-0529-4fc3-93b1-1ad66b9908eb | backend.app.services.fx_rate_service |   FX rate clean rows:  14
+2026-02-23 20:45:38 | INFO     | 9536bd44-0529-4fc3-93b1-1ad66b9908eb | backend.app.services.fx_rate_service | Cleanse — clean: 14, orphan: 0
+2026-02-23 20:45:38 | INFO     | 9536bd44-0529-4fc3-93b1-1ad66b9908eb | backend.app.services.fx_rate_service | SILVER write done in 0.00s
+2026-02-23 20:45:38 | INFO     | 9536bd44-0529-4fc3-93b1-1ad66b9908eb | backend.app.services.fx_rate_service | QUARANTINE write done (0 rows) in 0.00s
+2026-02-23 20:45:38 | INFO     | 9536bd44-0529-4fc3-93b1-1ad66b9908eb | backend.app.services.fx_rate_service | GOLDEN zone: starting DB upsert for 14 rows
+2026-02-23 20:45:38 | INFO     | 9536bd44-0529-4fc3-93b1-1ad66b9908eb | backend.app.services.fx_rate_service | Built 14 upsert records in 0.00s
+2026-02-23 20:45:38 | INFO     | 9536bd44-0529-4fc3-93b1-1ad66b9908eb | backend.app.services.fx_rate_service | Executing 1 batches of up to 249 rows each
+2026-02-23 20:45:38 | INFO     | 9536bd44-0529-4fc3-93b1-1ad66b9908eb | backend.app.services.fx_rate_service | DB upsert committed 14 rows in 0.00s
+2026-02-23 20:45:38 | INFO     | 9536bd44-0529-4fc3-93b1-1ad66b9908eb | backend.app.services.fx_rate_service | Total load_to_database time: 0.00s
+2026-02-23 20:45:38 | INFO     | 9536bd44-0529-4fc3-93b1-1ad66b9908eb | backend.app.services.fx_rate_service | GOLDEN zone: DB upsert completed in 0.00s
+2026-02-23 20:45:38 | INFO     | 9536bd44-0529-4fc3-93b1-1ad66b9908eb | backend.app.services.fx_rate_service | Pipeline completed in 0.01s
+2026-02-23 20:45:38 | INFO     | N/A                                  | uvicorn.access | 127.0.0.1:63853 - "POST /fx_rate HTTP/1.1" 200
+2026-02-23 20:45:43 | INFO     | N/A                                  | backend.app.services.financial_service |   Metrics computed for 478302 / 480740 rows
+2026-02-23 20:46:30 | INFO     | N/A                                  | uvicorn.access | 127.0.0.1:63855 - "POST /financials/calculate HTTP/1.1" 200
+2026-02-23 20:46:30 | INFO     | N/A                                  | backend.app.controllers.data_master | Retrieved 20000 company records - company_id: None, name: None, industry: None, country: None
+2026-02-23 20:46:30 | INFO     | N/A                                  | uvicorn.access | 127.0.0.1:63859 - "GET /company HTTP/1.1" 200
