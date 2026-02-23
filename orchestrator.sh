@@ -20,7 +20,7 @@
 set -euo pipefail
 
 BASE_DIR="$(cd "$(dirname "$0")" && pwd)"
-PORT=8004
+PORT=8005
 HOST="http://localhost:${PORT}"
 VENV_DIR="${BASE_DIR}/.venv"
 LOG_FILE="${BASE_DIR}/server.log"
@@ -76,13 +76,29 @@ ok "Dependencies installed."
 separator
 log "Step 3 — Starting FastAPI server on port ${PORT}..."
 cd "${BASE_DIR}"
+
+# Stamp a run header into the log so multiple runs are distinguishable
+{
+    echo ""
+    echo "════════════════════════════════════════════════════════════"
+    echo "  Server started at $(date '+%Y-%m-%d %H:%M:%S')"
+    echo "  PID will be updated below once the process is known"
+    echo "════════════════════════════════════════════════════════════"
+} >> "${LOG_FILE}"
+
 python3 -m uvicorn backend.app.main:app \
     --host 0.0.0.0 \
     --port "${PORT}" \
     --log-level info \
-    > "${LOG_FILE}" 2>&1 &
+    >> "${LOG_FILE}" 2>&1 &
 SERVER_PID=$!
-ok "Server started (PID ${SERVER_PID}). Logs → ${LOG_FILE}"
+
+# Back-fill the PID into the log now that we have it
+echo "  PID: ${SERVER_PID}" >> "${LOG_FILE}"
+
+ok "Server started (PID ${SERVER_PID})."
+ok "All server logs are being appended to: ${LOG_FILE}"
+log "  Tail live logs with:  tail -f ${LOG_FILE}"
 
 # ── Step 4: Wait for server to be ready ──────────────────────────────────────
 separator
@@ -91,7 +107,7 @@ MAX_WAIT=60
 WAITED=0
 until curl --silent --fail "${HOST}/docs" > /dev/null 2>&1; do
     if [[ ${WAITED} -ge ${MAX_WAIT} ]]; then
-        fail "Server did not start within ${MAX_WAIT}s. Check ${LOG_FILE}."
+        fail "Server did not start within ${MAX_WAIT}s. Check logs: tail -f ${LOG_FILE}"
     fi
     sleep 1
     WAITED=$((WAITED + 1))
@@ -171,7 +187,8 @@ ok "Pipeline orchestration complete."
 separator
 echo ""
 echo -e "${YELLOW}  The FastAPI server is still running (PID ${SERVER_PID}).${NC}"
-echo -e "${YELLOW}  Logs → ${LOG_FILE}${NC}"
+echo -e "${YELLOW}  Server logs → ${LOG_FILE}${NC}"
+echo -e "${YELLOW}  Tail live:     tail -f ${LOG_FILE}${NC}"
 echo ""
 
 # Read from /dev/tty so the prompt works even when stdin is a pipe
@@ -193,6 +210,7 @@ while true; do
             ok "Server left running in the background."
             log "  PID      : ${SERVER_PID}"
             log "  Logs     : ${LOG_FILE}"
+            log "  Tail     : tail -f ${LOG_FILE}"
             log "  API docs : http://localhost:${PORT}/docs"
             log "  Stop later with:  kill ${SERVER_PID}"
             separator

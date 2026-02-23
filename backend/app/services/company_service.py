@@ -56,6 +56,9 @@ class CompanyService(DataLoaderInterface):
         df_orphan = pd.concat([df_null_ids, df_duplicates], ignore_index=True, sort=False)
         df_orphan = df_orphan.sort_values(by=[column, 'created_at'], ascending=[True, False])
 
+        if not df_orphan.empty:
+            for reason, count in df_orphan['quarantine_reason'].value_counts().items():
+                log.info(f"  Company quarantine [{reason}]: {count} rows")
         log.info(f"Company orphan rows: {len(df_orphan)}")
         log.info(f"Company clean rows:  {len(df_unique)}")
         return df_unique, df_orphan
@@ -223,7 +226,14 @@ class CompanyService(DataLoaderInterface):
 
 
             result['load_uuid'] = load_uuid
-            result['orphan_info'] = {'orphan_count': len(df_orphan)}
+            result['orphan_info'] = {
+                'orphan_count': len(df_orphan),
+                'breakdown': df_orphan['quarantine_reason'].value_counts().to_dict() if not df_orphan.empty else {},
+                'orphan_records': CommonService.build_orphan_records(
+                    df_orphan,
+                    key_cols=['company_id', 'name', 'industry', 'country', 'created_at']
+                ),
+            }
             log.info(f"Pipeline completed in {time.perf_counter() - t_start:.2f}s")
             return result
 

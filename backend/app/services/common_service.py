@@ -190,15 +190,43 @@ class CommonService:
         return obj
 
     @staticmethod
-    def get_currency_map():
-        """Return a mapping of currency codes to their symbols."""
+    def get_currency_map() -> dict:
+        """
+        Maps known raw currency strings (including typos and case variants)
+        to their canonical 3-letter code.  Any value not present here is
+        considered malformed and should be quarantined.
+        """
         return {
             "EUR": "EUR", "EURO": "EUR", "eur": "EUR",
             "USD": "USD", "usd": "USD", "USDD": "USD",
             "GBP": "GBP", "gbp": "GBP", "GBR": "GBP",
-            "INR": "INR", "inr": "INR",
+            "INR": "INR", "inr": "INR", "INRR": "INR",
             "AED": "AED", "aed": "AED", "AEDX": "AED",
             "CAD": "CAD", "cad": "CAD",
             "SGD": "SGD", "sgd": "SGD",
             "CHF": "CHF", "chf": "CHF",
         }
+
+    @staticmethod
+    def build_orphan_records(df_orphan: pd.DataFrame, key_cols: list) -> list:
+        """
+        Converts the quarantined DataFrame into a list of dicts suitable for
+        inclusion in an API response.  Only the key columns plus
+        quarantine_reason are returned — pipeline metadata columns are stripped
+        to keep the payload clean.  NaN/Inf values are sanitised.
+        """
+        if df_orphan.empty:
+            return []
+
+        include_cols = [c for c in key_cols if c in df_orphan.columns]
+        if 'quarantine_reason' in df_orphan.columns:
+            include_cols = include_cols + ['quarantine_reason']
+
+        rows = df_orphan[include_cols].copy()
+        # Replace NaT / NaN so json serialisation doesn't choke
+        rows = rows.where(rows.notna(), other=None)
+
+        records = []
+        for rec in rows.to_dict(orient='records'):
+            records.append(CommonService.sanitise(rec))
+        return records

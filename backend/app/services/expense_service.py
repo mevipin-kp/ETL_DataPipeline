@@ -87,6 +87,9 @@ class ExpenseService(DataLoaderInterface):
         df_clean = df_clean.drop_duplicates(subset=['company_id', 'month'], keep='last')
 
         df_orphan = pd.concat([df_orphan, superseded], ignore_index=True)
+        if not df_orphan.empty:
+            for reason, count in df_orphan['quarantine_reason'].value_counts().items():
+                log.info(f"  Expense quarantine [{reason}]: {count} rows")
         log.info(f"  Expense orphan rows: {len(df_orphan)}")
         log.info(f"  Expense clean rows:  {len(df_clean)}")
         return df_clean, df_orphan
@@ -246,7 +249,14 @@ class ExpenseService(DataLoaderInterface):
 
 
             result['load_uuid'] = load_uuid
-            result['orphan_info'] = {'orphan_count': len(df_orphan)}
+            result['orphan_info'] = {
+                'orphan_count': len(df_orphan),
+                'breakdown': df_orphan['quarantine_reason'].value_counts().to_dict() if not df_orphan.empty else {},
+                'orphan_records': CommonService.build_orphan_records(
+                    df_orphan,
+                    key_cols=['company_id', 'month', 'expenses', 'updated_at']
+                ),
+            }
             log.info(f"Pipeline completed in {time.perf_counter() - t_start:.2f}s")
             return result
 

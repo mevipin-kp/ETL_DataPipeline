@@ -47,11 +47,14 @@ class RevenueService(DataLoaderInterface):
         Flags bad rows and splits the frame into clean vs quarantined.
 
         Priority order (highest wins when multiple issues apply):
-        ORPHAN_COMPANY_ID > NULL_REVENUE > NEGATIVE_REVENUE
+        ORPHAN_COMPANY_ID > MALFORMED_CURRENCY > NULL_REVENUE > NEGATIVE_REVENUE
 
         After filtering, duplicates on (company_id, month) keep the row
         with the latest updated_at; older copies go to quarantine as
         SUPERSEDED_BY_CORRECTION.
+
+        Clean rows have their currency normalised to the canonical 3-letter
+        code via CommonService.get_currency_map() before being returned.
         """
         df = df.copy()
         df['quarantine_reason'] = None
@@ -59,6 +62,11 @@ class RevenueService(DataLoaderInterface):
         null_company_mask     = df['company_id'].isna()
         null_revenue_mask     = df['revenue'].isna()
         negative_revenue_mask = df['revenue'].notna() & (df['revenue'] < 0)
+
+        # Currency — strip+upper already done in preprocess_data, but guard here too
+        currency_map = CommonService.get_currency_map()
+        df['currency'] = df['currency'].astype(str).str.strip()
+        malformed_currency_mask = ~df['currency'].isin(currency_map)
 
         # Orphan check against known company_ids in dim_company
         if db is not None:
@@ -73,13 +81,17 @@ class RevenueService(DataLoaderInterface):
             orphan_company_mask = null_company_mask
 
         # Apply lowest priority first so higher-priority reasons overwrite
-        df.loc[negative_revenue_mask, 'quarantine_reason'] = 'NEGATIVE_REVENUE'
-        df.loc[null_revenue_mask,     'quarantine_reason'] = 'NULL_REVENUE'
-        df.loc[orphan_company_mask,   'quarantine_reason'] = 'ORPHAN_COMPANY_ID'
+        df.loc[negative_revenue_mask,  'quarantine_reason'] = 'NEGATIVE_REVENUE'
+        df.loc[null_revenue_mask,       'quarantine_reason'] = 'NULL_REVENUE'
+        df.loc[malformed_currency_mask, 'quarantine_reason'] = 'MALFORMED_CURRENCY'
+        df.loc[orphan_company_mask,     'quarantine_reason'] = 'ORPHAN_COMPANY_ID'
 
         invalid_mask = df['quarantine_reason'].notna()
         df_orphan = df[invalid_mask].copy()
         df_clean  = df[~invalid_mask].copy()
+
+        # Normalise currency on clean rows to canonical 3-letter code
+        df_clean['currency'] = df_clean['currency'].map(currency_map)
 
         # Dedup — keep latest updated_at per (company_id, month); superseded rows quarantined
         df_clean = df_clean.sort_values('updated_at', ascending=True)
@@ -88,6 +100,11 @@ class RevenueService(DataLoaderInterface):
         df_clean = df_clean.drop_duplicates(subset=['company_id', 'month'], keep='last')
 
         df_orphan = pd.concat([df_orphan, superseded], ignore_index=True)
+
+        # Log a breakdown by quarantine reason
+        if not df_orphan.empty:
+            for reason, count in df_orphan['quarantine_reason'].value_counts().items():
+                log.info(f"  Revenue quarantine [{reason}]: {count} rows")
         log.info(f"  Revenue orphan rows: {len(df_orphan)}")
         log.info(f"  Revenue clean rows:  {len(df_clean)}")
         return df_clean, df_orphan
@@ -246,7 +263,14 @@ class RevenueService(DataLoaderInterface):
 
 
             result['load_uuid'] = load_uuid
-            result['orphan_info'] = {'orphan_count': len(df_orphan)}
+            result['orphan_info'] = {
+                'orphan_count': len(df_orphan),
+                'breakdown': df_orphan['quarantine_reason'].value_counts().to_dict() if not df_orphan.empty else {},
+                'orphan_records': CommonService.build_orphan_records(
+                    df_orphan,
+                    key_cols=['company_id', 'month', 'revenue', 'currency', 'updated_at']
+                ),
+            }
             log.info(f"Pipeline completed in {time.perf_counter() - t_start:.2f}s")
             return result
 

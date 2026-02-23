@@ -1,8 +1,0 @@
-2026-02-22 14:57:05 | INFO     | N/A                                  | uvicorn.error | Started server process [87499]
-2026-02-22 14:57:05 | INFO     | N/A                                  | uvicorn.error | Waiting for application startup.
-2026-02-22 14:57:05 | INFO     | N/A                                  | uvicorn.error | Application startup complete.
-2026-02-22 14:57:05 | ERROR    | N/A                                  | uvicorn.error | [Errno 48] error while attempting to bind on address ('0.0.0.0', 8004): address already in use
-2026-02-22 14:57:05 | INFO     | N/A                                  | uvicorn.error | Waiting for application shutdown.
-2026-02-22 14:57:05 | INFO     | N/A                                  | uvicorn.error | Application shutdown complete.
-Database initialized successfully with DDL from /Users/vipinkp/PycharmProjects/Liquidity_DataPipeline/docker/init_tables.sql
-Database connection pool disposed

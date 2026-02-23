@@ -64,6 +64,9 @@ class FxRateService(DataLoaderInterface):
         )
 
         df_orphan = pd.concat([df_orphan, superseded], ignore_index=True)
+        if not df_orphan.empty:
+            for reason, count in df_orphan['quarantine_reason'].value_counts().items():
+                log.info(f"  FX rate quarantine [{reason}]: {count} rows")
         log.info(f"  FX rate orphan rows: {len(df_orphan)}")
         log.info(f"  FX rate clean rows:  {len(df_clean)}")
         return df_clean, df_orphan
@@ -208,7 +211,14 @@ class FxRateService(DataLoaderInterface):
             log.info(f"GOLDEN zone: DB upsert completed in {time.perf_counter() - t_golden:.2f}s")
 
             result['load_uuid']    = load_uuid
-            result['orphan_info']  = {'orphan_count': len(df_orphan)}
+            result['orphan_info']  = {
+                'orphan_count': len(df_orphan),
+                'breakdown': df_orphan['quarantine_reason'].value_counts().to_dict() if not df_orphan.empty else {},
+                'orphan_records': CommonService.build_orphan_records(
+                    df_orphan,
+                    key_cols=['local_currency', 'base_currency', 'date', 'fx_rate']
+                ),
+            }
             log.info(f"Pipeline completed in {time.perf_counter() - t_start:.2f}s")
             return result
 
