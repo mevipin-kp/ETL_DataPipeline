@@ -53,7 +53,7 @@ DataPipeline/
 
 ```bash
 git clone <repo-url>
-cd Liquidity_DataPipeline
+cd DataPipeline
 ```
 
 ### 2. Create a virtual environment
