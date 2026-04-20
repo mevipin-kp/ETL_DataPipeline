@@ -1,4 +1,4 @@
-# Liquidity Data Pipeline
+# Data Pipeline
 
 A FastAPI-based data pipeline that loads company, revenue, expense, and FX rate data from CSV files through a medallion architecture (Bronze → Silver → Quarantine → Golden) into a SQLite database, then computes financial metrics.
 
@@ -20,7 +20,7 @@ Docker is optional. It is only needed if you want to run the bundled MinIO / Spa
 ## Project Structure
 
 ```
-Liquidity_DataPipeline/
+DataPipeline/
 ├── backend/
 │   ├── app/
 │   │   ├── controllers/      # FastAPI route handlers
