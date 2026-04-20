@@ -1,4 +1,4 @@
-# Design Document — Liquidity Data Pipeline
+# Design Document — ETL Data Pipeline
 
 **Author:** Data Engineering  
 **Date:** February 2026  
@@ -9,7 +9,7 @@
 ## 1. Overview
 
 This document describes the architecture, data model, incremental strategy, data quality approach,
-and known trade-offs for the Liquidity Data Pipeline. The pipeline ingests three CSV feeds —
+and known trade-offs for the ETL Data Pipeline. The pipeline ingests three CSV feeds —
 companies, monthly revenue, and monthly expenses — cleans and validates them, persists clean
 records to a relational store, and computes six financial metrics per company per month.
 
