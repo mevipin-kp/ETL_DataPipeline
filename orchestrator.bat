@@ -1,6 +1,6 @@
 @echo off
 REM =============================================================================
-REM orchestrator.bat — Liquidity Data Pipeline orchestrator (Windows)
+REM orchestrator.bat — ETL Data Pipeline orchestrator (Windows)
 REM
 REM Usage:
 REM   Double-click orchestrator.bat  OR  run from Command Prompt / PowerShell
@@ -25,7 +25,7 @@ set LOG_FILE=%BASE_DIR%server.log
 
 echo.
 echo ============================================================
-echo  Liquidity Data Pipeline — Orchestrator
+echo  ETL Data Pipeline — Orchestrator
 echo ============================================================
 echo.
 
