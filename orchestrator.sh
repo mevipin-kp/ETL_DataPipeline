@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # =============================================================================
-# orchestrator.sh — Liquidity Data Pipeline orchestrator
+# orchestrator.sh — ETL Data Pipeline orchestrator
 #
 # Usage:
 #   chmod +x orchestrator.sh
